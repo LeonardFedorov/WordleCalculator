@@ -25,8 +25,7 @@ let rec RunSession targetDir =
         let clueString = Console.ReadLine()
         if not (validClues clueString) then failwith "Clue input invalid"
 
-        let revisedList = WordleCode.parseClueList guess clueString
-                          |> WordleCode.filterList wordList
+        let revisedList = WordleCode.filterList wordList guess clueString
         Console.WriteLine("\nRevised list contains " + (Array.length revisedList).ToString() + " words.")
 
         let getNextStep =
