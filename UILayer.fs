@@ -21,7 +21,7 @@ let rec RunSession targetDir =
         let guess = Console.ReadLine()
         if not (validWord guess) then failwith "Word input invalid"
 
-        Console.WriteLine("Input clue string (g = Green, y = Yellow, - = Grey:")
+        Console.WriteLine("Input clue string (g = Green, y = Yellow, - = Grey):")
         let clueString = Console.ReadLine()
         if not (validClues clueString) then failwith "Clue input invalid"
 
