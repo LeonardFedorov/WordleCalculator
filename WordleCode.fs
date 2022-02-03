@@ -60,7 +60,6 @@ let filterList (wordList: string[]) (guess: string) (clueString: string) =
         List.init stringLength (fun i -> parseClueLetter i)
         |> List.distinct //Greys and Yellows can create repeated clues, so trim these to keep the filter efficient
 
-
     Array.filter (fun word -> testWord word clues) wordList
 
 
