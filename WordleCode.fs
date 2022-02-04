@@ -70,5 +70,8 @@ let printWordList (wordList: string[]) =
     Console.Write ("\n")
 
 let importWordList targetDir =
-    let fileStream = new StreamReader(targetDir + "\\WordList.txt")
-    fileStream.ReadToEnd().Split([|"\r\n"|], StringSplitOptions.RemoveEmptyEntries)
+    let targetFile = targetDir + "\\WordList.txt"
+    if not (System.IO.File.Exists(targetFile)) then None
+    else
+        let fileStream = new StreamReader(targetFile)
+        Some (fileStream.ReadToEnd().Split([|"\r\n"|], StringSplitOptions.RemoveEmptyEntries))

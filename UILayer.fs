@@ -15,7 +15,7 @@ let rec RunSession targetDir =
 
         let validClues (clues: string) =
             if clues.Length <> WordleCode.stringLength then false
-            elif Array.tryFind (fun c -> c <> 'g' && c <> 'y' && c <> '-') (clues.ToCharArray()) <> None then false
+            elif Array.exists (fun c -> c <> 'g' && c <> 'y' && c <> '-') (clues.ToCharArray()) then false
             else true
 
         let validNextStep (nextStep: string) =
@@ -60,9 +60,13 @@ let rec RunSession targetDir =
     Console.WriteLine("\nStarting New Session")
 
     let wordList = WordleCode.importWordList targetDir
-    Console.WriteLine("Word List Imported with " + (Array.length wordList).ToString() + " words\n")
-
-    SessionIter wordList
+    if wordList.IsNone then
+        Console.WriteLine "Could not find source file - expected WordList.txt to be present in executable directory. Press Enter to exit."
+        Console.ReadLine() |> ignore
+        0
+    else
+        Console.WriteLine("Word List Imported with " + (Array.length wordList.Value).ToString() + " words\n")
+        SessionIter wordList.Value
     
 [<EntryPoint>]
 let main argv =
