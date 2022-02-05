@@ -26,10 +26,8 @@ let filterList (wordList: string[]) (guess: string) (clueString: string) =
             | Yellow(c, posList, n) -> if
                                           List.fold (fun s i -> word.[i] <> c && s) true posList && 
                                           countChar c word >= n
-                                       then
-                                          true
-                                       else 
-                                          false
+                                       then true
+                                       else false
     
     //Tests if a word is consistent with all of a given list of clues
     let testWord word (clues: WordleClue list) =

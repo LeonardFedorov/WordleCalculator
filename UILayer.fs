@@ -27,8 +27,8 @@ let rec RunSession baseWordList =
         let rec getInput (validator: string -> bool) =
             let input = Console.ReadLine()
             if validator input then input 
-                else Console.WriteLine("Invalid input, please input again:")
-                     getInput validator
+            else Console.WriteLine("Invalid input, please input again:")
+                 getInput validator
 
         //Get the User's next action and move execution to perform it
         let rec getNextStep revisedList =
@@ -62,7 +62,7 @@ let rec RunSession baseWordList =
     
 [<EntryPoint>]
 let main argv =
-    Console.WriteLine("Wordle Assistant")
+    Console.WriteLine("Wordlemancer")
     Console.WriteLine("By Oliver Ingamells\n")
     let targetDir = Environment.CurrentDirectory.ToString()
     let baseWordList = WordleCode.importWordList (targetDir + "\\WordList.txt")
