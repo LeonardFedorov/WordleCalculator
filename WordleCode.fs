@@ -62,15 +62,12 @@ let filterList (wordList: string[]) (guess: string) (clueString: string) =
 
     Array.filter (fun word -> testWord word clues) wordList
 
-
 //Miscellaneous functions, mostly I/O
 let printWordList (wordList: string[]) =
     let (output: string) = String.concat ", " wordList
-    Console.WriteLine output
-    Console.Write ("\n")
+    Console.WriteLine (output + "\n")
 
-let importWordList targetDir =
-    let targetFile = targetDir + "\\WordList.txt"
+let importWordList targetFile =
     if not (System.IO.File.Exists(targetFile)) then None
     else
         let fileStream = new StreamReader(targetFile)

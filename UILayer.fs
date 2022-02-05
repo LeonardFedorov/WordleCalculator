@@ -1,8 +1,8 @@
 ﻿open System
 
 //Start a new wordle session
-let rec RunSession targetDir =
-
+let rec RunSession baseWordList =
+    
     let rec SessionIter wordList =
 
         //Functions to test the validity of inputs
@@ -40,13 +40,13 @@ let rec RunSession targetDir =
                 | 'G' | 'g' -> SessionIter revisedList //Iterate the session forward with a new guess
                 | 'P' | 'p' -> WordleCode.printWordList revisedList //Print the current list, and then ask again for next action
                                getNextStep revisedList
-                | 'R' | 'r' -> RunSession targetDir //Start a new session
+                | 'R' | 'r' -> RunSession baseWordList //Start a new session
                 | 'E' | 'e' -> 0 //Return to caller, thereby ending the execution
                 | _ -> failwith "Invalid step input"
 
         //Get the next guess and clue result from the user
         Console.WriteLine("Input guess (all lower case):")
-        let guess = getInput (validWord wordList)
+        let guess = getInput (validWord baseWordList)
 
         Console.WriteLine("Input clue string (g = Green, y = Yellow, - = Grey):")
         let clueString = getInput validClues
@@ -56,21 +56,21 @@ let rec RunSession targetDir =
 
         getNextStep revisedList
 
-    //Import the fresh word list and then start the iterator
-    Console.WriteLine("\nStarting New Session")
-
-    let wordList = WordleCode.importWordList targetDir
-    if wordList.IsNone then
-        Console.WriteLine "Could not find source file - expected WordList.txt to be present in executable directory. Press Enter to exit."
-        Console.ReadLine() |> ignore
-        0
-    else
-        Console.WriteLine("Word List Imported with " + (Array.length wordList.Value).ToString() + " words\n")
-        SessionIter wordList.Value
+    //Start the iterator
+    Console.WriteLine("\nStarting New Session\n")
+    SessionIter baseWordList
     
 [<EntryPoint>]
 let main argv =
     Console.WriteLine("Wordle Assistant")
-    Console.WriteLine("By Oliver Ingamells")
-    let currentDir = Environment.CurrentDirectory.ToString()
-    RunSession currentDir
+    Console.WriteLine("By Oliver Ingamells\n")
+    let targetDir = Environment.CurrentDirectory.ToString()
+    let baseWordList = WordleCode.importWordList (targetDir + "\\WordList.txt")
+
+    if baseWordList.IsNone then
+        Console.WriteLine "Could not find source file - expected WordList.txt to be present in executable directory. Press Enter to exit."
+        Console.ReadLine() |> ignore
+        0
+    else
+        Console.WriteLine("Word List Imported with " + (Array.length baseWordList.Value).ToString() + " words")
+        RunSession baseWordList.Value
