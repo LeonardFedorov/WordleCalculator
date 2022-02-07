@@ -30,31 +30,30 @@ let rec RunSession baseWordList =
             else Console.WriteLine("Invalid input, please input again:")
                  getInput validator
 
-        //Get the User's next action and move execution to perform it
-        let rec getNextStep revisedList =
+        //Get the user's guess and parse the impact on the word list
+        let getGuess wordList =
+            Console.WriteLine("Input guess (all lower case):")
+            let guess = getInput (validWord baseWordList)
+
+            Console.WriteLine("Input clue string (g = Green, y = Yellow, - = Grey):")
+            let clueString = getInput validClues
+
+            let revisedList = WordleCode.filterList wordList guess clueString
+            Console.WriteLine("\nRevised list contains " + (Array.length revisedList).ToString() + " words.")
             
-            Console.WriteLine("(G)uess another word, (P)rint valid word list, (R)estart or (E)nd?")
-            let nextStep = getInput validNextStep
+            SessionIter revisedList
+
+        //Get the User's next action and move execution to perform it       
+        Console.WriteLine("(G)uess a word, (P)rint valid word list, (R)estart or (E)nd?")
+        let nextStep = getInput validNextStep
                 
-            match nextStep.[0] with
-                | 'G' | 'g' -> SessionIter revisedList //Iterate the session forward with a new guess
-                | 'P' | 'p' -> WordleCode.printWordList revisedList //Print the current list, and then ask again for next action
-                               getNextStep revisedList
-                | 'R' | 'r' -> RunSession baseWordList //Start a new session
-                | 'E' | 'e' -> 0 //Return to caller, thereby ending the execution
-                | _ -> failwith "Invalid step input"
-
-        //Get the next guess and clue result from the user
-        Console.WriteLine("Input guess (all lower case):")
-        let guess = getInput (validWord baseWordList)
-
-        Console.WriteLine("Input clue string (g = Green, y = Yellow, - = Grey):")
-        let clueString = getInput validClues
-
-        let revisedList = WordleCode.filterList wordList guess clueString
-        Console.WriteLine("\nRevised list contains " + (Array.length revisedList).ToString() + " words.")      
-
-        getNextStep revisedList
+        match nextStep.[0] with
+            | 'G' | 'g' -> getGuess wordList //Iterate the session forward with a new guess
+            | 'P' | 'p' -> WordleCode.printWordList wordList //Print the current list, and then ask again for next action
+                           SessionIter wordList
+            | 'R' | 'r' -> RunSession baseWordList //Start a new session
+            | 'E' | 'e' -> 0 //Return to caller, thereby ending the execution
+            | _ -> failwith "Invalid step input"
 
     //Start the iterator
     Console.WriteLine("\nStarting New Session\n")
