@@ -20,7 +20,7 @@ let rec RunSession baseWordList =
 
         let validNextStep (nextStep: string) =
             match nextStep.[0] with
-                | 'G' | 'g' | 'P' | 'p' | 'R' | 'r' | 'E' | 'e' -> true
+                | 'G' | 'g' | 'P' | 'p' | 'R' | 'r' | 'E' | 'e' | 'A' | 'a' -> true
                 | _ -> false
 
         //Get and validate an input, reprompting the user to re-enter invalid inputs before returning
@@ -44,12 +44,14 @@ let rec RunSession baseWordList =
             SessionIter revisedList
 
         //Get the User's next action and move execution to perform it       
-        Console.WriteLine("(G)uess a word, (P)rint valid word list, (R)estart or (E)nd?")
+        Console.WriteLine("(G)uess a word, (P)rint valid word list, (A)nalyse remaining words, (R)estart or (E)nd?")
         let nextStep = getInput validNextStep
                 
         match nextStep.[0] with
             | 'G' | 'g' -> getGuess wordList //Iterate the session forward with a new guess
             | 'P' | 'p' -> WordleCode.printWordList wordList //Print the current list, and then ask again for next action
+                           SessionIter wordList
+            | 'A' | 'a' -> WordScorer.rankWords wordList |> WordScorer.printTopN 5 //Analyse the current list for suggestions
                            SessionIter wordList
             | 'R' | 'r' -> RunSession baseWordList //Start a new session
             | 'E' | 'e' -> 0 //Return to caller, thereby ending the execution
@@ -57,6 +59,7 @@ let rec RunSession baseWordList =
 
     //Start the iterator
     Console.WriteLine("\nStarting New Session\n")
+
     SessionIter baseWordList
     
 [<EntryPoint>]

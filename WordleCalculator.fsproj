@@ -4,10 +4,21 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <WarnOn>3390;$(WarnOn)</WarnOn>
+    <PackageId>Wordlemancer</PackageId>
+    <Authors>Oliver Ingamells</Authors>
+    <Company />
+    <Product>Wordlemancer</Product>
+    <NeutralLanguage>en-GB</NeutralLanguage>
+    <AssemblyName>Wordlemancer</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="WordleCode.fs" />
+    <Compile Include="WordScorer.fs" />
     <Compile Include="UILayer.fs" />
   </ItemGroup>
 

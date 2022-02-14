@@ -62,7 +62,7 @@ let filterList (wordList: string[]) (guess: string) (clueString: string) =
 
 //Miscellaneous functions, mostly I/O
 let printWordList (wordList: string[]) =
-    let (output: string) = String.concat ", " wordList
+    let output = String.concat ", " wordList
     Console.WriteLine (output + "\n")
 
 let importWordList targetFile =
