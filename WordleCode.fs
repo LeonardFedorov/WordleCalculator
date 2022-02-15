@@ -85,7 +85,7 @@ let filterListByString (wordList: string[]) (guess: string) (clueString: string)
 
 //Get a list of all semantically distinct clue configurations for a given word
 let generateAllClues (word: string) = 
-    clueList.Value
+    clueList.Force ()
     |> Array.map (fun clueString -> getClues word clueString)
     |> Array.distinct
 
