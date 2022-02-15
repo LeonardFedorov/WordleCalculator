@@ -66,6 +66,7 @@ let rec RunSession baseWordList =
 let main argv =
     Console.WriteLine("Wordlemancer")
     Console.WriteLine("By Oliver Ingamells\n")
+
     let targetDir = Environment.CurrentDirectory.ToString()
     let baseWordList = WordleCode.importWordList (targetDir + "\\WordList.txt")
 
@@ -74,5 +75,6 @@ let main argv =
         Console.ReadLine() |> ignore
         0
     else
-        Console.WriteLine("Word List Imported with " + (Array.length baseWordList.Value).ToString() + " words")
+        Console.WriteLine("Word List Imported with " + (Array.length baseWordList.Value).ToString() + " words\n")
+        Console.WriteLine("Top 5 Starter Words with current metric:\nsease : 7.446\nseise : 7.212\nsasse : 7.122\nareae : 7.087\nrasse : 7.033")
         RunSession baseWordList.Value

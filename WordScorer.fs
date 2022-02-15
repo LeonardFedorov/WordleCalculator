@@ -26,10 +26,9 @@ let rankWords (wordList: string[]) =
     
     let wordScore (word: string) =
         Array.map (fun clue -> WordleCode.filterList wordList word clue) clueList
-        |> Array.map (fun filteredList -> if filteredList.Length = 0 then 0.0 else
-                                          let p = float filteredList.Length / float wordList.Length
-                                          p * Math.Log2 (1.0 / p))
-        |> Array.sum
+        |> Array.fold (fun sum filteredList -> sum + if filteredList.Length = 0 then 0.0 else
+                                                        let p = float filteredList.Length / float wordList.Length
+                                                        p * Math.Log2 (1.0 / p)) 0.0
 
     Array.Parallel.map (fun (word:string) -> let score = wordScore word
                                              Console.WriteLine(word + " - " + (score.ToString()))
@@ -42,6 +41,6 @@ let printTopN n (scoreList: (string * float)[]) =
 
     for i in 0..(count - 1) do
         let (word, score) = scoreList.[i]
-        Console.WriteLine(word + " : " + score.ToString())
+        Console.WriteLine(word + " : " + score.ToString("0.000"))
 
     Console.Write("\n")
