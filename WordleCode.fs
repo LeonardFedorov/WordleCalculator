@@ -10,55 +10,84 @@ type WordleClue =
     | Green of char * int // char * position
     | Yellow of char * (int list) * int // char * (list of yellow/grey positions of char) * count of G/Y clues for char
     | Grey of char * int // char * count of G/Y clues for char
-    
+
+let clueList = lazy(
+    let numToChar n = 
+        match n with
+            | 0 -> 'g'
+            | 1 -> 'y'
+            | 2 -> '-'
+            | _ -> failwith "Unexpected number passed to char conversion"
+
+    let mutable (result: string[]) = Array.create (pown 3 5) "0"
+    let mutable counter = 0
+    for i0 in 0..2 do
+        for i1 in 0..2 do
+            for i2 in 0..2 do
+                for i3 in 0..2 do
+                    for i4 in 0..2 do
+                        result.[counter] <- String([|numToChar i0 ; numToChar i1 ; numToChar i2 ; numToChar i3 ; numToChar i4|])
+                        counter <- counter + 1
+    result
+    )
+
+let getClues (guess: string) (clueString: string) =
+    let parseClueLetter (clueIndex: int) =
+ 
+        let countGYs (targetChar: char) =
+            Array.fold2 (fun count char clue -> if char = targetChar && (clue = 'g' || clue = 'y') then count + 1 else count) 0 (guess.ToCharArray()) (clueString.ToCharArray())
+   
+        let findYGreys (targetChar: char) =
+            let mutable indexList = List.Empty
+            for i in 0 .. (stringLength - 1) do
+                if guess.[i] = targetChar && (clueString.[i] = 'y' || clueString.[i] = '-') then indexList <- i :: indexList else ()
+            indexList
+ 
+        let currentClue = clueString.[clueIndex]
+        let currentChar = guess.[clueIndex]
+        match currentClue with
+            | 'g' -> Green(currentChar, clueIndex)
+            | 'y' -> Yellow (currentChar, findYGreys currentChar, countGYs currentChar)
+            | '-' -> Grey(currentChar, countGYs currentChar)
+            | _ -> failwith "Unexpected clue type"    
+      
+    List.init stringLength (fun i -> parseClueLetter i)
+    |> List.distinct //Greys and Yellows can create repeated clues, so trim these to keep the filter efficient  
+
+let filterListByClues (wordList:String[]) (guess: string) (clueList: WordleClue list) =
+
+     //Tests if word is consistent with the given clue
+     let applyClue (word: string) clue =
+ 
+         let countChar char (word: string) =
+             Array.fold (fun s c -> if c = char then s + 1 else s) 0 (word.ToCharArray())
+ 
+         match clue with
+             | Green(c, i) -> if word.[i] = c then true else false
+             | Grey(c, n) -> if countChar c word = n then true else false
+             | Yellow(c, posList, n) -> if
+                                           List.fold (fun s i -> word.[i] <> c && s) true posList && 
+                                           countChar c word >= n
+                                        then true
+                                        else false
+ 
+     //Tests if a word is consistent with all of a given list of clues
+     let testWord word (clues: WordleClue list) =
+         List.map (fun clue -> applyClue word clue) clues
+         |> List.exists (fun x -> x = false)
+         |> not
+
+     Array.filter (fun word -> testWord word clueList) wordList   
+
 //Filter a list of words to only those that satisfy all of the clues
-let filterList (wordList: string[]) (guess: string) (clueString: string) =
+let filterListByString (wordList: string[]) (guess: string) (clueString: string) =
+    filterListByClues wordList guess (getClues guess clueString)
 
-    //Tests if word is consistent with the given clue
-    let applyClue (word: string) clue =
-    
-        let countChar char (word: string) =
-            Array.fold (fun s c -> if c = char then s + 1 else s) 0 (word.ToCharArray())
-    
-        match clue with
-            | Green(c, i) -> if word.[i] = c then true else false
-            | Grey(c, n) -> if countChar c word = n then true else false
-            | Yellow(c, posList, n) -> if
-                                          List.fold (fun s i -> word.[i] <> c && s) true posList && 
-                                          countChar c word >= n
-                                       then true
-                                       else false
-    
-    //Tests if a word is consistent with all of a given list of clues
-    let testWord word (clues: WordleClue list) =
-        List.map (fun clue -> applyClue word clue) clues
-        |> List.exists (fun x -> x = false)
-        |> not
-
-    let clues =
-        let parseClueLetter (clueIndex: int) =
- 
-            let countGYs (targetChar: char) =
-                Array.fold2 (fun count char clue -> if char = targetChar && (clue = 'g' || clue = 'y') then count + 1 else count) 0 (guess.ToCharArray()) (clueString.ToCharArray())
-     
-            let findYGreys (targetChar: char) =
-                let mutable indexList = List.Empty
-                for i in 0 .. (stringLength - 1) do
-                    if guess.[i] = targetChar && (clueString.[i] = 'y' || clueString.[i] = '-') then indexList <- i :: indexList else ()
-                indexList
- 
-            let currentClue = clueString.[clueIndex]
-            let currentChar = guess.[clueIndex]
-            match currentClue with
-                | 'g' -> Green(currentChar, clueIndex)
-                | 'y' -> Yellow (currentChar, findYGreys currentChar, countGYs currentChar)
-                | '-' -> Grey(currentChar, countGYs currentChar)
-                | _ -> failwith "Unexpected clue type"    
-        
-        List.init stringLength (fun i -> parseClueLetter i)
-        |> List.distinct //Greys and Yellows can create repeated clues, so trim these to keep the filter efficient
-
-    Array.filter (fun word -> testWord word clues) wordList
+//Get a list of all semantically distinct clue configurations for a given word
+let generateAllClues (word: string) = 
+    clueList.Value
+    |> Array.map (fun clueString -> getClues word clueString)
+    |> Array.distinct
 
 //Miscellaneous functions, mostly I/O
 let printWordList (wordList: string[]) =

@@ -38,7 +38,7 @@ let rec RunSession baseWordList =
             Console.WriteLine("Input clue string (g = Green, y = Yellow, - = Grey):")
             let clueString = getInput validClues
 
-            let revisedList = WordleCode.filterList wordList guess clueString
+            let revisedList = WordleCode.filterListByString wordList guess clueString
             Console.WriteLine("\nRevised list contains " + (Array.length revisedList).ToString() + " words.")
             
             SessionIter revisedList

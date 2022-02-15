@@ -3,29 +3,11 @@ module WordScorer
 
 open System
 
-let clueList =
-    let numToChar n = 
-        match n with
-            | 0 -> 'g'
-            | 1 -> 'y'
-            | 2 -> '-'
-            | _ -> failwith "Unexpected number passed to char conversion"
-
-    let mutable (result: string[]) = Array.create (pown 3 5) "0"
-    let mutable counter = 0
-    for i0 in 0..2 do
-        for i1 in 0..2 do
-            for i2 in 0..2 do
-                for i3 in 0..2 do
-                    for i4 in 0..2 do
-                        result.[counter] <- String([|numToChar i0 ; numToChar i1 ; numToChar i2 ; numToChar i3 ; numToChar i4|])
-                        counter <- counter + 1
-    result
-
 let rankWords (wordList: string[]) =
     
     let wordScore (word: string) =
-        Array.map (fun clue -> WordleCode.filterList wordList word clue) clueList
+        WordleCode.generateAllClues word
+        |> Array.map (fun clue -> WordleCode.filterListByClues wordList word clue)
         |> Array.fold (fun sum filteredList -> sum + if filteredList.Length = 0 then 0.0 else
                                                         let p = float filteredList.Length / float wordList.Length
                                                         p * Math.Log2 (1.0 / p)) 0.0
