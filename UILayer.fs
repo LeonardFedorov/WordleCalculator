@@ -51,7 +51,8 @@ let rec RunSession baseWordList =
             | 'G' | 'g' -> getGuess wordList //Iterate the session forward with a new guess
             | 'P' | 'p' -> WordleCode.printWordList wordList //Print the current list, and then ask again for next action
                            SessionIter wordList
-            | 'A' | 'a' -> WordScorer.rankWords wordList |> WordScorer.printTopN 5 //Analyse the current list for suggestions
+            | 'A' | 'a' -> Console.WriteLine("This may take a minute if there are still lots of words left...")
+                           WordScorer.rankWords wordList |> WordScorer.printTopN 5 //Analyse the current list for suggestions
                            SessionIter wordList
             | 'R' | 'r' -> RunSession baseWordList //Start a new session
             | 'E' | 'e' -> 0 //Return to caller, thereby ending the execution
@@ -76,5 +77,5 @@ let main argv =
         0
     else
         Console.WriteLine("Word List Imported with " + (Array.length baseWordList.Value).ToString() + " words\n")
-        Console.WriteLine("Top 5 Starter Words with current metric:\nsease : 7.446\nseise : 7.212\nsasse : 7.122\nareae : 7.087\nrasse : 7.033")
+        Console.WriteLine("Top 5 Starter Words with current metric:\ntares : 6.194\nlares : 6.150\nrales : 6.114\nrates : 6.096\nteras : 6.077")
         RunSession baseWordList.Value

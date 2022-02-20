@@ -11,26 +11,6 @@ type WordleClue =
     | Yellow of char * (int list) * int // char * (list of yellow/grey positions of char) * count of G/Y clues for char
     | Grey of char * int // char * count of G/Y clues for char
 
-let clueList = lazy(
-    let numToChar n = 
-        match n with
-            | 0 -> 'g'
-            | 1 -> 'y'
-            | 2 -> '-'
-            | _ -> failwith "Unexpected number passed to char conversion"
-
-    let mutable (result: string[]) = Array.create (pown 3 5) "0"
-    let mutable counter = 0
-    for i0 in 0..2 do
-        for i1 in 0..2 do
-            for i2 in 0..2 do
-                for i3 in 0..2 do
-                    for i4 in 0..2 do
-                        result.[counter] <- String([|numToChar i0 ; numToChar i1 ; numToChar i2 ; numToChar i3 ; numToChar i4|])
-                        counter <- counter + 1
-    result
-    )
-
 let getClues (guess: string) (clueString: string) =
     let parseClueLetter (clueIndex: int) =
  
@@ -82,12 +62,6 @@ let filterListByClues (wordList:String[]) (guess: string) (clueList: WordleClue 
 //Filter a list of words to only those that satisfy all of the clues
 let filterListByString (wordList: string[]) (guess: string) (clueString: string) =
     filterListByClues wordList guess (getClues guess clueString)
-
-//Get a list of all semantically distinct clue configurations for a given word
-let generateAllClues (word: string) = 
-    clueList.Force ()
-    |> Array.map (fun clueString -> getClues word clueString)
-    |> Array.distinct
 
 //Miscellaneous functions, mostly I/O
 let printWordList (wordList: string[]) =
