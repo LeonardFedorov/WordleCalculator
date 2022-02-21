@@ -4,13 +4,9 @@ module WordScorer
 open System
 
 let wordCompare (guess: string) (solution: string) =
-    //Initialise the result as all greys
-    let mutable clueString = Array.create 5 '-'
+    //Initialise the result as greys or greens based on whether there's a match
+    let mutable clueString = Array.init 5 (fun i -> if guess.[i] = solution.[i] then 'g' else '-')
 
-    //Find all character matches, i.e. greens
-    for i in 0..4 do
-        if guess.[i] = solution.[i] then clueString.[i] <- 'g'
-    
     //Now look for yellows
     for i in 0..4 do
         if guess.[i] <> solution.[i] then

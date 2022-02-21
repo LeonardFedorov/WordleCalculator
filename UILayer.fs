@@ -60,7 +60,6 @@ let rec RunSession baseWordList =
 
     //Start the iterator
     Console.WriteLine("\nStarting New Session\n")
-
     SessionIter baseWordList
     
 [<EntryPoint>]
@@ -77,5 +76,5 @@ let main argv =
         0
     else
         Console.WriteLine("Word List Imported with " + (Array.length baseWordList.Value).ToString() + " words\n")
-        Console.WriteLine("Top 5 Starter Words with current metric:\ntares : 6.194\nlares : 6.150\nrales : 6.114\nrates : 6.096\nteras : 6.077")
+        Console.WriteLine("Top 5 Starter Words with current metric:\n tares : 6.194\n lares : 6.150\n rales : 6.114\n rates : 6.096\n teras : 6.077")
         RunSession baseWordList.Value
