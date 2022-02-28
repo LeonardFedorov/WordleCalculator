@@ -19,9 +19,10 @@ let rec RunSession baseWordList =
             else true
 
         let validNextStep (nextStep: string) =
-            match nextStep.[0] with
-                | 'G' | 'g' | 'P' | 'p' | 'R' | 'r' | 'E' | 'e' | 'A' | 'a' -> true
-                | _ -> false
+            if nextStep.Length = 0 then false
+            else match nextStep.[0] with
+                    | 'G' | 'g' | 'P' | 'p' | 'R' | 'r' | 'E' | 'e' | 'A' | 'a' -> true
+                    | _ -> false
 
         //Get and validate an input, reprompting the user to re-enter invalid inputs before returning
         let rec getInput (validator: string -> bool) =
